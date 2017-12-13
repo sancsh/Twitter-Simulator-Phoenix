@@ -1,12 +1,47 @@
-<div class="row">
-    TWEETS HERE
-</div>
-<div class="row">
-<div class="col-md-6">
-    SUBSCRIBERS HERE
-</div>
+<div class="container">
+        <h1>Welcome to the Dashboard {}</h1>
+        <div class = "row" id="tweetrow">
+                
+                <div class="row">
+                    <textarea rows="4" cols="50">
+                    </textarea>
+                </div>
+                
+                <div class="tweetBtnrow">
+                    <button id="tweetBtn">Tweet</button>
+                </div>
+                
+        </div>
 
-<div class="col-md-6">
-    HASHTAGS HERE
-</div>
+        <div class ="row" id="displayRow">
+            <div class= "col-md-9" id="tweetDisplay">
+            Tweets come here
+            </div>
+
+            <div class= "col-md-3" id="mentionsDisplay">
+            Mentions come here
+            </div>
+            
+        </div>
+
+        <div class="row" id="followRow">
+                <div class="col-md-6" id="followersDisplay">
+                    Followers HERE
+                </div>
+
+                <div class="col-md-6" id="followingDisplay">
+                    Following HERE
+                </div>
+        </div>
+
+        <div class= "row" id="searchBarRow">
+             <div class="col-md-6" id="searchBarCol">
+                    <input type ="text" id="searchBar" />
+                    <button>Search for Tweets</button>
+                </div>
+            <div class= "col-md-6" id="searchResults">
+            Search results
+            </div>
+
+        </div>
 </div>
