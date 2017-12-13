@@ -39,4 +39,23 @@ defmodule TwitterSimulator.Endpoint do
     signing_salt: "aBy4CQVs"
 
   plug TwitterSimulator.Router
+
+  def init(_key, config) do
+    :ets.new(:user_pid_table, [:set, :public, :named_table]);
+    :ets.new(:user_tweet_table, [:set, :public, :named_table]);
+    :ets.new(:user_table, [:set, :public, :named_table]);
+    :ets.new(:tweet_table, [:set, :public, :named_table]);
+    :ets.new(:handle_table, [:set, :public, :named_table]);
+    :ets.new(:hashtag_table, [:set, :public, :named_table]);
+    :ets.new(:following_table, [:set, :public, :named_table]);
+    :ets.new(:follower_table, [:set, :public, :named_table]);
+    :ets.new(:user_sockets, [:set, :public, :named_table]);
+    
+    if config[:load_from_system_env] do
+      port = System.get_env("PORT") || 4000
+      {:ok, Keyword.put(config, :http, [:inet6, port: port])}
+    else
+      {:ok, config}
+    end
+  end
 end

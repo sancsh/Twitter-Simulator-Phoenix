@@ -8,30 +8,15 @@
     <meta name="author" content="">
 
     <title>Twitter Simulator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    
   </head>
 
     <body>
-    <h1>Welcome to Twitter!</h1>
-    <div class="container">
-        <div class="card card-container">
-            
-            <form class="form-signin">
-                <span id="reauth-email" class="reauth-email"></span>
-                <input type="text" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
-                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-                <div id="remember" class="checkbox">
-                    <label>
-                        <input type="checkbox" value="remember-me"> Remember me
-                    </label>
-                </div>
-                <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Sign in</button>
-            </form>
-            <a href="#" class="forgot-password">
-                Forgot the password?
-            </a>
-        </div>
-        </div>
+        <main role="main">
+        <%= render @view_module, @view_template, assigns %>
+      </main>
     </body>
-    
-</html>
+<script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+  </html>

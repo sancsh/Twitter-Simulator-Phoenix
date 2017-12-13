@@ -17,7 +17,7 @@ defmodule TwitterSimulator.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
-    get "/api/user/:id", PageController, :user
+    get "/user/:id", UserController, :index
   end
 
 

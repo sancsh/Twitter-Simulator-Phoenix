@@ -6,6 +6,6 @@ defmodule TwitterSimulator.PageController do
   end
 
   def user(conn, _params) do
-    render conn, "index.html"
+    render conn, "user.html"
   end
 end
