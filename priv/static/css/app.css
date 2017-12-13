@@ -98,7 +98,25 @@ body, form, ul, table {
 
 h1{
   text-align: center;
+  padding-bottom: 30px;
 }
+
+#tweetBtn, #tweetBtnrow, #displayRow, #searchBarRow{
+  margin:auto;
+  width:100%;
+}
+
+
+#tweetrow, #followRow{
+  padding-bottom: 30px;
+  margin:auto;
+  width: 50%;
+}
+
+#displayRow{
+  padding-bottom: 30px;
+}
+
 .card-container.card {
   max-width: 350px;
   padding: 40px 40px;
@@ -139,9 +157,6 @@ h1{
   border-radius: 50%;
 }
 
-/*
-* Form styles
-*/
 .profile-name-card {
   font-size: 16px;
   font-weight: bold;
@@ -194,9 +209,7 @@ h1{
 }
 
 .btn.btn-signin {
-  /*background-color: #4d90fe; */
   background-color: rgb(104, 145, 162);
-  /* background-color: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));*/
   padding: 0px;
   font-weight: 700;
   font-size: 14px;

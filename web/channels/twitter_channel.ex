@@ -12,7 +12,7 @@ defmodule TwitterSimulator.TwitterChannel do
         password = payload["password"];
         returnValue = :ets.insert_new(:user_table, {username, password});
         push(socket, "Registered", %{status: returnValue});
-        {:no_reply, socket}
+        {:noreply, socket}
     end
 
     def handle_in("login_user", payload, socket) do
@@ -30,6 +30,6 @@ defmodule TwitterSimulator.TwitterChannel do
                 push(socket, "Login", %{status: "N_OK", login_message: "Incorrect Password"})
             end
         end
-        {:no_reply, socket}
+        {:noreply, socket}
     end
 end

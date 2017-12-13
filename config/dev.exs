@@ -49,7 +49,7 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :twitter_simulator, TwitterSimulator.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
+  username: "sanchitsharma",
   password: "postgres",
   database: "twitter_simulator_dev",
   hostname: "localhost",
