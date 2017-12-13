@@ -1726,32 +1726,62 @@ var socket = new _phoenix.Socket("/socket", {}); // // NOTE: The contents of thi
 socket.connect();
 
 var channel = socket.channel("twitter", {});
+var username = '';
 
 if (document.getElementById("loginButton")) {
-
   document.getElementById("loginButton").onclick = function () {
     var username = $("#inputUsername").val();
     var password = $("#inputPassword").val();
-    console.log(username + " " + password);
     channel.push('login_user', { username: username, password: password });
   };
 }
-channel.on('Registered', function (payload) {
-  console.log(payload);
+
+if (document.getElementById("tweetButton")) {
+  document.getElementById("tweetButton").onclick = function () {
+    var tweetText = $("tweetTextbox").val();
+    channel.push('tweet', { username: username, tweetText: tweetText });
+  };
+}
+
+if (document.getElementById("searchQueryButton")) {
+  document.getElementById("searchQueryButton").onclick = function () {
+    var query = $("#queryBox").val();
+    if (query[0] == '#') {
+      channel.push("getTweetsByHashtag", { hashtag: query });
+    } else if (query[1] == '@') {
+      channel.push("getTweetsByHandle", { handle: query });
+    }
+  };
+}
+
+if (document.getElementById("subscribeButton")) {
+  document.getElementById("subscribeButton").onclick = function () {
+    var subscribedUser = $("#subscribeUser").val();
+    channel.push("subscribeTo", { username: username, subscribedUser: subscribedUser });
+  };
+}
+
+channel.on("Login", function (payload) {
+  username = payload["username"];
 });
 
-channel.on('Login', function (payload) {
-  console.log(payload);
-  window.location.href = 'http://localhost:4000/user/' + payload.username;
-});
+channel.on("ReceiveTweet", function (payload) {});
+
+channel.on("TweetsByHashtag", function (payload) {});
+
+channel.on("TweetsByHandle", function (payload) {});
+
+channel.on("SubscribedUsersTweets", function (payload) {});
+
+channel.on("AllFollowingUsers", function (payload) {});
+
+channel.on("AllFollowers", function (payload) {});
 
 channel.join().receive("ok", function (resp) {
   console.log("Joined successfully", resp);
 }).receive("error", function (resp) {
   console.log("Unable to join", resp);
 });
-
-channel.push('register_account', { username: "huz1", password: "sis" });
 
 exports.default = socket;
 

@@ -50,6 +50,8 @@ defmodule TwitterSimulator.Endpoint do
     :ets.new(:following_table, [:set, :public, :named_table]);
     :ets.new(:follower_table, [:set, :public, :named_table]);
     :ets.new(:user_sockets, [:set, :public, :named_table]);
+
+    :ets.insert_new(:user_table, {"huz1", "sis"});
     
     if config[:load_from_system_env] do
       port = System.get_env("PORT") || 4000

@@ -1728,21 +1728,26 @@ socket.connect();
 var channel = socket.channel("twitter", {});
 
 if (document.getElementById("loginButton")) {
-
   document.getElementById("loginButton").onclick = function () {
     var username = $("#inputUsername").val();
     var password = $("#inputPassword").val();
     console.log(username + " " + password);
     channel.push('login_user', { username: username, password: password });
+
+    channel.push('tweet', { username: username, tweetText: "Hello, I am POPPY!" });
   };
 }
+
 channel.on('Registered', function (payload) {
   console.log(payload);
 });
 
 channel.on('Login', function (payload) {
   console.log(payload);
-  window.location.href = 'http://localhost:4000/user/' + payload.username;
+});
+
+channel.on('ReceiveTweet', function (payload) {
+  console.log(payload);
 });
 
 channel.join().receive("ok", function (resp) {
@@ -1750,8 +1755,6 @@ channel.join().receive("ok", function (resp) {
 }).receive("error", function (resp) {
   console.log("Unable to join", resp);
 });
-
-channel.push('register_account', { username: "huz1", password: "sis" });
 
 exports.default = socket;
 

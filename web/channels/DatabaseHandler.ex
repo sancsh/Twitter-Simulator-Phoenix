@@ -54,13 +54,13 @@ defmodule DatabaseHandler do
          tweetText
     end
 
-    def getUserPidByName(username) do
-        userpid = :ets.lookup(:user_pid_table, username)
-        if userpid === [] do
+    def getUserSocketByName(username) do
+        userSocket = :ets.lookup(:user_sockets, username)
+        if userSocket === [] do
             nil
         else
-            [{username, pid}] = userpid
-            pid
+            [{username, userSocket}] = userSocket
+            userSocket
         end
     end
 
