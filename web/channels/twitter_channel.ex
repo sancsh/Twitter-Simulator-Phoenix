@@ -1,5 +1,6 @@
 defmodule TwitterSimulator.TwitterChannel do
     use Phoenix.Channel
+    require Logger
 
     def join("twitter", _payload, socket) do
         #DatabaseHandler.init();
@@ -26,6 +27,10 @@ defmodule TwitterSimulator.TwitterChannel do
             if(returnedPassword == password) do
                 :ets.insert(:user_sockets, {username, socket})
                 push(socket, "Login", %{status: "OK", login_message: "Login Successful" , username: username})
+                tweetList = DatabaseHandler.getAllTweetsByUser(username);
+                mentionTweetList = DatabaseHandler.getAllTweetsByHandle(username);
+                push(socket, "ReceiveAllTweets", %{tweetList: tweetList, owner: username});
+
             else
                 push(socket, "Login", %{status: "N_OK", login_message: "Incorrect Password"})
             end
@@ -49,6 +54,7 @@ defmodule TwitterSimulator.TwitterChannel do
         handles = TweetParser.getAllHandles(tweetText);
         hashtags = TweetParser.getAllHashtags(tweetText);
         tweetId = :ets.info(:tweet_table)[:size];
+        tweetText = "#{user} tweeted:  #{tweetText}";
         DatabaseHandler.insertTweet(tweetId, user, tweetText);
         Enum.map(handles, fn (handle) -> DatabaseHandler.insertHandleTweet(handle, tweetId) end);
         Enum.map(hashtags, fn (hashtag) -> DatabaseHandler.insertHashtagTweet(hashtag, tweetId) end);
@@ -60,14 +66,14 @@ defmodule TwitterSimulator.TwitterChannel do
         #send Tweet to Mentions
          Enum.map(handles, fn handle -> sendTweetToUser(handle, tweetId, tweetText) end);
          
-         push(socket, "ReceiveTweet", %{tweetId: tweetId, tweetText: tweetText});
+         push(socket, "ReceiveTweet", %{tweetId: tweetId, tweetText: tweetText, owner: user});
          {:noreply, socket}
     end
 
     def handle_in("getAllTweets", payload, socket) do
         username = payload["username"];
         tweetList = DatabaseHandler.getAllTweetsByUser(username);
-        push(socket, "ReceiveAllTweets", %{tweetList: tweetList});
+        push(socket, "ReceiveAllTweets", %{tweetList: tweetList, owner: username});
         {:noreply, socket}
     end
 
@@ -75,13 +81,17 @@ defmodule TwitterSimulator.TwitterChannel do
         username = payload["username"];
         subscribedUser = payload["subscribedUser"];
         DatabaseHandler.addUserToFollowingList(username, subscribedUser);
+        subscribedUserSocket = DatabaseHandler.getUserSocketByName(subscribedUser);
+        push(socket, "AddToFollowingList", %{subscribedUser: subscribedUser});
         DatabaseHandler.addUserToFollowersList(subscribedUser, username);
+        push(subscribedUserSocket, "AddToFollowersList", %{user: username});
         {:noreply, socket}
     end
 
     def handle_in("getTweetsByHashtag", payload, socket) do
         hashtag = payload["hashtag"];
         tweets = DatabaseHandler.getAllTweetsByHashtag(hashtag);
+        
         push(socket, "TweetsByHashtag", %{hashtag: hashtag, tweets: tweets})
         {:noreply, socket}
     end
@@ -100,14 +110,14 @@ defmodule TwitterSimulator.TwitterChannel do
         {:noreply, socket}
     end
 
-    def handle_call("getAllFollowing", payload, socket) do
+    def handle_in("getAllFollowing", payload, socket) do
         user = payload["username"];
         followingList = DatabaseHandler.getAllFollowing(user)
         push(socket, "AllFollowingUsers", %{followingList: followingList});
         {:noreply, socket}
     end
 
-    def handle_call("getAllFollowers", payload, socket) do
+    def handle_in("getAllFollowers", payload, socket) do
         user = payload["username"];
         followersList = DatabaseHandler.getAllFollowers(user)
         push(socket, "AllFollowers", %{followersList: followersList});
@@ -119,7 +129,7 @@ defmodule TwitterSimulator.TwitterChannel do
         DatabaseHandler.insertTweetInUserTable(user, tweetId);
         userSocket = DatabaseHandler.getUserSocketByName(user);
         if userSocket !== nil do
-            push(userSocket, "ReceiveTweet", %{tweetId: tweetId, tweetText: tweetText});
+            push(userSocket, "ReceiveTweet", %{tweetId: tweetId, tweetText: tweetText, owner: user});
         end
     end
 end

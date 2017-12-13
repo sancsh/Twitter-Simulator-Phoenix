@@ -1,16 +1,24 @@
 <div class="container">
-        <h1>Welcome to the Dashboard {}</h1>
+        <h1 id = "title"></h1>
         <div class = "row" id="tweetrow">
                 
                 <div class="row">
-                    <textarea rows="4" cols="50">
-                    </textarea>
+                    <input type="text" id="tweetTextbox">
+                    </input>
                 </div>
                 
                 <div class="tweetBtnrow">
-                    <button id="tweetBtn">Tweet</button>
+                    <button id="tweetButton">Tweet</button>
                 </div>
                 
+                <div class="row">
+                    <input type="text" id="followinput">
+                    </input>
+                </div>
+                
+                <div class="followBtnrow">
+                    <button id="followButton">Follow</button>
+                </div>
         </div>
 
         <div class ="row" id="displayRow">
@@ -37,7 +45,7 @@
         <div class= "row" id="searchBarRow">
              <div class="col-md-6" id="searchBarCol">
                     <input type ="text" id="searchBar" />
-                    <button>Search for Tweets</button>
+                    <button id="searchQueryButton">Search for Tweets</button>
                 </div>
             <div class= "col-md-6" id="searchResults">
             Search results

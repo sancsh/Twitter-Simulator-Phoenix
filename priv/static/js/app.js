@@ -1728,6 +1728,8 @@ socket.connect();
 var channel = socket.channel("twitter", {});
 var username = '';
 
+$(".dashboard").hide();
+
 if (document.getElementById("loginButton")) {
   document.getElementById("loginButton").onclick = function () {
     var username = $("#inputUsername").val();
@@ -1738,44 +1740,211 @@ if (document.getElementById("loginButton")) {
 
 if (document.getElementById("tweetButton")) {
   document.getElementById("tweetButton").onclick = function () {
-    var tweetText = $("tweetTextbox").val();
-    channel.push('tweet', { username: username, tweetText: tweetText });
+    var tweetText = $("#tweetTextbox");
+    console.log(tweetText);
+    channel.push('tweet', { username: username, tweetText: tweetText.val() });
   };
 }
 
 if (document.getElementById("searchQueryButton")) {
   document.getElementById("searchQueryButton").onclick = function () {
-    var query = $("#queryBox").val();
+    var query = $("#searchBar").val();
     if (query[0] == '#') {
-      channel.push("getTweetsByHashtag", { hashtag: query });
-    } else if (query[1] == '@') {
-      channel.push("getTweetsByHandle", { handle: query });
+      channel.push("getTweetsByHashtag", { hashtag: query.substring(1) });
+    } else if (query[0] == '@') {
+      channel.push("getTweetsByHandle", { handle: query.substring(1) });
     }
   };
 }
 
-if (document.getElementById("subscribeButton")) {
-  document.getElementById("subscribeButton").onclick = function () {
-    var subscribedUser = $("#subscribeUser").val();
+if (document.getElementById("followButton")) {
+  document.getElementById("followButton").onclick = function () {
+    var subscribedUser = $("#followinput").val();
     channel.push("subscribeTo", { username: username, subscribedUser: subscribedUser });
   };
 }
 
 channel.on("Login", function (payload) {
   username = payload["username"];
+  //channel.push("getAllTweets", {username: username});
+  console.log(payload);
+  if (payload["status"] == "OK") {
+    $(".loginBox").hide();
+    $(".dashboard").show();
+    $("#title").text("Welcome to your Dashboard, " + username);
+    channel.push("getAllFollowers", { username: username });
+    channel.push("getAllFollowing", { username: username });
+  }
 });
 
-channel.on("ReceiveTweet", function (payload) {});
+channel.on("ReceiveAllTweets", function (payload) {
+  var tweetList = document.getElementById("tweetDisplay");
+  console.log(payload);
+  payload["tweetList"].map(function (val) {
+    // var tweet = document.createElement("p");
+    var tweetText = val[1].split(":")[1];
+    // if(val[1].split(" ")[0] === username)
+    //   tweet.innerText = "You tweeted: " + tweetText;
+    // else
+    // tweet.innerText = val[1];
+    // tweetList.appendChild(tweet);
 
-channel.on("TweetsByHashtag", function (payload) {});
+    var tweetSpan = document.createElement("span");
+    if (tweetText.indexOf("@" + username) > 0) {
+      var mentionList = document.getElementById("mentionsDisplay");
 
-channel.on("TweetsByHandle", function (payload) {});
+      var tweet = document.createElement("p");
+      if (val[1].split(" ")[0] === username) tweet.innerText = "You tweeted: " + tweetText;else tweet.innerText = val[1];
+
+      var retweetBtn = document.createElement("button");
+      retweetBtn.setAttribute("tweetId", val[0]);
+      retweetBtn.setAttribute("id", "retweetButton");
+      retweetBtn.className = "fa fa-retweet";
+      retweetBtn.addEventListener("click", function () {
+
+        var tweetId = val[0];
+        console.log(tweetId);
+        channel.push("retweet", { tweetId: tweetId, username: username });
+      });
+      tweetSpan.appendChild(tweet);
+      tweetSpan.appendChild(retweetBtn);
+      mentionList.appendChild(tweetSpan);
+    } else {
+      var tweetList = document.getElementById("tweetDisplay");
+      var tweet = document.createElement("p");
+
+      if (val[1].split(" ")[0] === username) tweet.innerText = "You tweeted: " + tweetText;else tweet.innerText = val[1];
+
+      var retweetBtn = document.createElement("button");
+      retweetBtn.setAttribute("tweetId", val[0]);
+      retweetBtn.className = "fa fa-retweet";
+      retweetBtn.addEventListener("click", function () {
+        var tweetId = val[0];
+        console.log(tweetId);
+        channel.push("retweet", { tweetId: tweetId, username: username });
+      });
+      tweetSpan.appendChild(tweet);
+      tweetSpan.appendChild(retweetBtn);
+
+      tweetList.appendChild(tweetSpan);
+    }
+  });
+});
+
+channel.on("ReceiveTweet", function (payload) {
+  var tweetText = payload["tweetText"].split(":")[1];
+  var tweetSpan = document.createElement("span");
+  if (tweetText.indexOf("@" + username) > 0) {
+    var mentionList = document.getElementById("mentionsDisplay");
+
+    var tweet = document.createElement("p");
+    if (payload["tweetText"].split(" ")[0] === username) tweet.innerText = "You tweeted: " + tweetText;else tweet.innerText = payload["tweetText"];
+
+    var retweetBtn = document.createElement("button");
+    retweetBtn.setAttribute("tweetId", payload["tweetId"]);
+    retweetBtn.setAttribute("id", "retweetButton");
+    retweetBtn.className = "fa fa-retweet";
+    retweetBtn.addEventListener(onclick, function () {
+      var tweetId = payload["tweetId"];
+      channel.push("retweet", { tweetId: tweetId, username: username });
+    });
+    tweetSpan.appendChild(tweet);
+    tweetSpan.appendChild(retweetBtn);
+    mentionList.appendChild(tweetSpan);
+  } else {
+    var tweetList = document.getElementById("tweetDisplay");
+    var tweet = document.createElement("p");
+
+    if (payload["tweetText"].split(" ")[0] === username) tweet.innerText = "You tweeted: " + tweetText;else tweet.innerText = payload["tweetText"];
+
+    var retweetBtn = document.createElement("button");
+    retweetBtn.setAttribute("tweetId", payload["tweetId"]);
+    retweetBtn.setAttribute("id", "retweetButton");
+    retweetBtn.className = "fa fa-retweet";
+    retweetBtn.addEventListener(onclick, function () {
+      var tweetId = payload["tweetId"];
+      channel.push("retweet", { tweetId: tweetId, username: username });
+    });
+    tweetSpan.appendChild(tweet);
+    tweetSpan.appendChild(retweetBtn);
+    tweetList.appendChild(tweetSpan);
+  }
+});
+
+channel.on("AllFollowers", function (payload) {
+  var followersDiv = document.getElementById("followersDisplay");
+  payload["followersList"].map(function (val) {
+    var nameP = document.createElement("p");
+    nameP.textContent = val;
+    followersDiv.appendChild(nameP);
+  });
+});
+
+channel.on("AllFollowingUsers", function (payload) {
+  var followersDiv = document.getElementById("followingDisplay");
+  payload["followingList"].map(function (val) {
+    var nameP = document.createElement("p");
+    nameP.textContent = val;
+    followersDiv.appendChild(nameP);
+  });
+});
+
+channel.on("TweetsByHashtag", function (payload) {
+  var searchResults = document.getElementById("searchResults");
+  console.log(payload);
+  while (searchResults.hasChildNodes()) {
+    searchResults.removeChild(searchResults.firstChild);
+  }
+  if (payload["tweets"].length == 0) {
+    var tweetP = document.createElement("p");
+    tweetP.textContent = "No Resuls Found";
+    searchResults.appendChild(tweetP);
+  } else {
+    payload["tweets"].map(function (val) {
+      var tweetP = document.createElement("p");
+      tweetP.textContent = val[1];
+      searchResults.appendChild(tweetP);
+    });
+  }
+});
+
+channel.on("TweetsByHandle", function (payload) {
+  var searchResults = document.getElementById("searchResults");
+  while (searchResults.hasChildNodes()) {
+    searchResults.removeChild(searchResults.firstChild);
+  }
+
+  console.log(payload);
+  if (payload["tweets"].length == 0) {
+    var tweetP = document.createElement("p");
+    tweetP.textContent = "No Results Found";
+    searchResults.appendChild(tweetP);
+  } else {
+    payload["tweets"].map(function (val) {
+      var tweetP = document.createElement("p");
+      tweetP.textContent = val[1];
+      searchResults.appendChild(tweetP);
+    });
+  }
+});
 
 channel.on("SubscribedUsersTweets", function (payload) {});
 
 channel.on("AllFollowingUsers", function (payload) {});
 
-channel.on("AllFollowers", function (payload) {});
+channel.on("AddToFollowingList", function (payload) {
+  var followersDiv = document.getElementById("followingDisplay");
+  var userP = document.createElement("p");
+  userP.innerText = payload["subscribedUser"];
+  followersDiv.appendChild(userP);
+});
+
+channel.on("AddToFollowersList", function (payload) {
+  var followersDiv = document.getElementById("followersDisplay");
+  var userP = document.createElement("p");
+  userP.innerText = payload["user"];
+  followersDiv.appendChild(userP);
+});
 
 channel.join().receive("ok", function (resp) {
   console.log("Joined successfully", resp);

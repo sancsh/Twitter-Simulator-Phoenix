@@ -1,4 +1,5 @@
 
+<div class = "loginBox">
     <h1>Welcome to Twitter!</h1>
     <div class="container">
         <div class="card card-container">
@@ -17,3 +18,64 @@
             </a>
         </div>
         </div>
+        </div>
+
+<div class="dashboard">
+<div class="container">
+        <h1 id = "title"></h1>
+        <div class = "row" id="tweetrow">
+                
+                <div class="row">
+                    <input type="text" id="tweetTextbox">
+                    </input>
+                </div>
+                
+                <div class="tweetBtnrow">
+                    <button id="tweetButton">Tweet</button>
+                </div>
+                
+
+                <div class="row">
+                    <input type="text" id="followinput">
+                    </input>
+                </div>
+                
+                <div class="followBtnrow">
+                    <button id="followButton">Follow</button>
+                </div>
+
+        </div>
+
+        <div class ="row" id="displayRow">
+            <div class= "col-md-9" id="tweetDisplay">
+            Tweets come here
+            </div>
+
+            <div class= "col-md-3" id="mentionsDisplay">
+            Mentions come here
+            </div>
+            
+        </div>
+
+        <div class="row" id="followRow">
+                <div class="col-md-6" id="followersDisplay">
+                    Followers HERE
+                </div>
+
+                <div class="col-md-6" id="followingDisplay">
+                    Following HERE
+                </div>
+        </div>
+
+        <div class= "row" id="searchBarRow">
+             <div class="col-md-6" id="searchBarCol">
+                    <input type ="text" id="searchBar" />
+                    <button id="searchQueryButton">Search for Tweets</button>
+                </div>
+            <div class= "col-md-6" id="searchResults">
+            Search results
+            </div>
+
+        </div>
+</div>
+</div>

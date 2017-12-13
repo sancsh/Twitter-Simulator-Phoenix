@@ -1,5 +1,5 @@
 defmodule DatabaseHandler do
-
+    require Logger
     # def init() do
     #     :ets.new(:user_pid_table, [:set, :public, :named_table]);
     #     :ets.new(:user_tweet_table, [:set, :public, :named_table]);
@@ -49,8 +49,8 @@ defmodule DatabaseHandler do
         end
     end
 
-    def getTweetById(tablename, tweetId) do
-         [{tweetId, tweetText}] = :ets.lookup(tablename, tweetId)
+    def getTweetById(tweetId) do
+         [{tweetId, tweetText}] = :ets.lookup(:tweet_table, tweetId)
          tweetText
     end
 
@@ -76,7 +76,7 @@ defmodule DatabaseHandler do
         else
             [{user, tweetList}] = tweets
             tweetList
-            Enum.map(tweetList, fn tweetId -> {tweetId, getTweetById(:tweet_table, tweetId)}  end)
+            Enum.map(tweetList, fn tweetId -> [tweetId, getTweetById(tweetId)]  end)
         end
         
     end
@@ -88,7 +88,7 @@ defmodule DatabaseHandler do
         else
             [{u, list}] = list
             list
-            Enum.map(list, fn tweetId -> {tweetId, getTweetById(:tweet_table, tweetId)}  end)
+            Enum.map(list, fn tweetId -> [tweetId, getTweetById(tweetId)]  end)
         end
     end
 
@@ -99,7 +99,7 @@ defmodule DatabaseHandler do
         else
             [{u, list}] = list
             list
-            Enum.map(list, fn tweetId -> {tweetId, getTweetById(:tweet_table, tweetId)}  end)
+            Enum.map(list, fn tweetId -> [tweetId, getTweetById(tweetId)]  end)
         end
 
     end
