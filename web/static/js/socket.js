@@ -82,6 +82,14 @@ if(document.getElementById("loginButton")){
   };
 }
 
+if(document.getElementById("registerButton")){
+  document.getElementById("registerButton").onclick = function(){
+    let username = $("#inputUsername").val();
+    let password = $("#inputPassword").val();
+    channel.push('register_user', {username: username, password: password});  
+  };
+}
+
 if(document.getElementById("tweetButton")){
   document.getElementById("tweetButton").onclick = function(){
     let tweetText = $("#tweetTextbox");
@@ -105,6 +113,7 @@ if(document.getElementById("searchQueryButton")){
 if(document.getElementById("followButton")){
   document.getElementById("followButton").onclick = function(){
     let subscribedUser = $("#followinput").val();
+    $("#followinput").val('');
     channel.push("subscribeTo", {username: username, subscribedUser: subscribedUser});
   };
 }
@@ -120,6 +129,17 @@ channel.on("Login", function(payload){
     $("#title").text("Welcome to your Dashboard, " + username);
     channel.push("getAllFollowers", {username: username});
     channel.push("getAllFollowing", {username: username});
+  }
+});
+
+channel.on("Registered", function(payload){
+  username = payload["username"];
+  //channel.push("getAllTweets", {username: username});
+  console.log(payload);
+  if(payload["status"] == true){
+    $(".loginBox").hide();
+    $(".dashboard").show();
+    $("#title").text("Welcome to your Dashboard, " + username);
   }
 });
 
@@ -203,8 +223,9 @@ channel.on("ReceiveTweet", function(payload){
     retweetBtn.setAttribute("tweetId", payload["tweetId"]);
     retweetBtn.setAttribute("id", "retweetButton");
     retweetBtn.className="fa fa-retweet";
-    retweetBtn.addEventListener(onclick, function(){
+    retweetBtn.addEventListener("click", function(){
       var tweetId = payload["tweetId"];
+      console.log(tweetId);
       channel.push("retweet", {tweetId: tweetId, username: username});
     });
     tweetSpan.appendChild(tweet)
@@ -223,8 +244,9 @@ channel.on("ReceiveTweet", function(payload){
     retweetBtn.setAttribute("tweetId", payload["tweetId"]);
     retweetBtn.setAttribute("id", "retweetButton");
     retweetBtn.className="fa fa-retweet";
-    retweetBtn.addEventListener(onclick, function(){
+    retweetBtn.addEventListener("click", function(){
       var tweetId = payload["tweetId"];
+      console.log(tweetId);
       channel.push("retweet", {tweetId: tweetId, username: username});
     });
     tweetSpan.appendChild(tweet)

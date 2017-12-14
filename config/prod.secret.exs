@@ -11,7 +11,7 @@ use Mix.Config
 config :twitter_simulator, TwitterSimulator.Endpoint,
   secret_key_base: "207KXaphEzvyJ5AoqVN5YA29REpYsQSkGm1gyTDxL+pErQgKbkd9N3Ds7HJ4r/Ko"
 
-# Configure your database
+#Configure your database
 config :twitter_simulator, TwitterSimulator.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",

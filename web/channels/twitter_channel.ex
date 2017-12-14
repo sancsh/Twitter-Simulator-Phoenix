@@ -8,11 +8,12 @@ defmodule TwitterSimulator.TwitterChannel do
         
     end
 
-    def handle_in("register_account", payload, socket) do
+    def handle_in("register_user", payload, socket) do
         username = payload["username"];
         password = payload["password"];
         returnValue = :ets.insert_new(:user_table, {username, password});
-        push(socket, "Registered", %{status: returnValue});
+        :ets.insert(:user_sockets, {username, socket})
+        push(socket, "Registered", %{status: returnValue, username: username});
         {:noreply, socket}
     end
 

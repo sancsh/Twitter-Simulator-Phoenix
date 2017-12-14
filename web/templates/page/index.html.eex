@@ -12,6 +12,7 @@
                     </label>
                 </div>
                 <button class="btn btn-lg btn-primary btn-block btn-signin" id="loginButton">Sign in</button>
+                <button class="btn btn-lg btn-primary btn-block btn-signin" id="registerButton">Register</button>
            
             <a href="#" class="forgot-password">
                 Forgot the password?
@@ -48,22 +49,22 @@
 
         <div class ="row" id="displayRow">
             <div class= "col-md-9" id="tweetDisplay">
-            Tweets come here
+            <h3>Tweets: </h3>
             </div>
 
             <div class= "col-md-3" id="mentionsDisplay">
-            Mentions come here
+            <h3>Mentions: </h3>
             </div>
             
         </div>
 
         <div class="row" id="followRow">
                 <div class="col-md-6" id="followersDisplay">
-                    Followers HERE
+                    <h3>Followers:</h3>
                 </div>
 
                 <div class="col-md-6" id="followingDisplay">
-                    Following HERE
+                    <h3>Following: </h3>
                 </div>
         </div>
 
@@ -73,7 +74,7 @@
                     <button id="searchQueryButton">Search for Tweets</button>
                 </div>
             <div class= "col-md-6" id="searchResults">
-            Search results
+            <h3>Search Results: </h3>
             </div>
 
         </div>
